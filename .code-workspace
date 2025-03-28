@@ -1,0 +1,12 @@
+{
+  "folders": [
+    { "path": "." },
+    { "path": "tools/my_tool" },
+    { "path": "scripts" },
+    { "path": "notebooks" }
+  ],
+  "settings": {
+    "python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3"
+  }
+}
+
