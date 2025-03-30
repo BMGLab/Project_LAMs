@@ -1,7 +1,6 @@
 # Ignore data and outputs
 data/
 results/
-figures/
 logs/
 tools/
 
