@@ -60,6 +60,40 @@ So.data$So <- factor(So.data$So,
 p.stg <- ggplot(So.data, aes(Projection_CellType, pct, fill = So )) + geom_boxplot() + theme_bw()
 ggsave(p.stg, filename = "figures/pct.stages.pdf", width = 10, height = 4, device = "pdf")
 
+
+#Plot distribution across disease type
+p.dis <- macs@meta.data %>% 
+  select(sample, Projection_CellType, tumor_stage, uicc_stage, origin, disease) %>% 
+  group_by(sample, Projection_CellType) %>% 
+  mutate(Cnt=n()) %>% 
+  unique() %>% 
+  group_by(sample) %>% 
+  mutate(pct=100*Cnt/sum(Cnt), Less=ifelse(sum(Cnt)<50, "low", "ok")) %>% 
+  filter(Less == "ok") %>% 
+  filter(!Projection_CellType %in% c('Int.Node.3', 'Int.Node.4', 'Int.Node.5')) %>%
+  filter(tumor_stage %in% c('early', 'advanced', 'non-cancer')) %>%
+  ggplot(aes(Projection_CellType, pct, fill = disease )) + geom_boxplot()
+
+ggsave(p.dis, filename = "figures/pct.disease-type.pdf", width = 10, height = 4, device = "pdf")
+
+
+#Plot distribution across tissue origin type
+p.tor <- macs@meta.data %>% 
+  select(sample, Projection_CellType, tumor_stage, uicc_stage, origin, disease) %>% 
+  group_by(sample, Projection_CellType) %>% 
+  mutate(Cnt=n()) %>% 
+  unique() %>% 
+  group_by(sample) %>% 
+  mutate(pct=100*Cnt/sum(Cnt), Less=ifelse(sum(Cnt)<50, "low", "ok")) %>% 
+  filter(Less == "ok") %>% 
+  filter(!Projection_CellType %in% c('Int.Node.3', 'Int.Node.4', 'Int.Node.5')) %>%
+  filter(tumor_stage %in% c('early', 'advanced', 'non-cancer')) %>%
+  ggplot(aes(Projection_CellType, pct, fill = origin )) + geom_boxplot()
+
+ggsave(p.tor, filename = "figures/pct.tissue-origin-type.pdf", width = 10, height = 4, device = "pdf")
+
+
+
 ##LA vs RTM antagonist
 macs@meta.data %>% 
   select(sample, Projection_CellType, tumor_stage, uicc_stage, origin, disease) %>% 
@@ -81,4 +115,6 @@ p.dens <- ggplot(df3, aes(LA_TAMs, RTM_TAMs, color=uicc_stage))+
   facet_wrap(vars(uicc_stage)) + theme_bw()
 
 ggsave(p.dens, filename = "figures/pct.density-LAvsRTM.pdf", width = 10, height = 4, device = "pdf")
+
+
 

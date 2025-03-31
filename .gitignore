@@ -1,6 +1,5 @@
 # Ignore data and outputs
 data/
-results/
 logs/
 tools/
 

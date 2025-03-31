@@ -26,10 +26,10 @@ conda activate your_env_name
 ```
 
 ## Pipeline Summary
-1. **01_preprocessing.R** – Load and QC the input data.
-2. **02_DE_analysis.py** – Differential expression analysis.
-3. **03_enrichment.R** – Functional enrichment (GO/KEGG).
-4. **04_plotting.R** – Generate figures for the manuscript.
+1. **01_Preprocess_LuCa_and_AUCell_macs.ipynb** – Load and QC the input data. Then, run AUCell for mac subtypes.
+2. **02_macs_predictions.R** – Create HieFIT cell type prediction model. 
+3. **03_inspect_ct_composition.R** – Inspect cell type compositions across samples.
+4. **04_PB-DEG.R** – Perform DEG on pseudo-bulked profiles.
 
 ## Figures
 All key plots are saved in `/figures`. The naming follows the manuscript figure order (e.g., `Figure1_PCA.png`, `Figure2_Volcano.pdf`).

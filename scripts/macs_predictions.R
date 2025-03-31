@@ -5,6 +5,8 @@ library(DiagrammeR)
 library(alluvial)
 library(ggalluvial)
 library(tidyverse)
+library(SingleCellExperiment)
+library(zellkonverter)
 
 #load whole LuCa dataset
 luca <- readRDS("data/local.rds")
@@ -63,7 +65,17 @@ SaveHieRMod(refMod = refmod, filePrefix = "data/Luca_Subtype_HierMod")
 hierObj <- HieRFIT(Query = luca_new[["RNA"]]@data, refMod = refmod)
 
 
+p.pred <- PlotBarStats(HieRobj = hierObj)
+
+ggsave(p.pred, filename = "figures/macs.predictions.barplot.pdf", width = 8, height = 4, device = "pdf")
+
+
 luca_new@meta.data <- cbind(luca_new@meta.data, hierObj@Evaluation$Projection)
 colnames(luca_new@meta.data)[colnames(luca_new@meta.data) == "hierObj@Evaluation$Projection"] <- "Projection_CellType"
 
 saveRDS(luca_new, file = "data/luca_query_reannotated.rds")
+
+# Load your Seurat object
+luca_new <- readRDS("data/luca_query_reannotated.rds")
+sce <- as.SingleCellExperiment(luca_new)
+writeH5AD(sce, file = "/data/luca_query_reannotated.h5ad")
