@@ -1,0 +1,6 @@
+name: EMAdown
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+prefix: /home/biolab/miniconda3/envs/EMAdown

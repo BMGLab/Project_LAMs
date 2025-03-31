@@ -88,8 +88,26 @@ all_means %>%
     title = "Heatmap of Mean Values"
   ) -> pb.all.ups
 
-h.size <- ceiling(length(ps_macs_deg[which(ps_macs_deg$SubType == ct), "gene_name"])/5)
 
-ggsave(plot = pb.all.ups, filename = paste("figures/", ct,".genes.pb.results.heatmap.pdf", sep = ""),width = 4, height = h.size, limitsize = FALSE)
 
+plotted_genes <- all_means %>%
+  left_join(max_celltype, by = "gene_symbols") %>%
+  mutate(gene_name = ifelse(ct == max_celltype, gene_name, NA)) %>%
+  filter(!is.na(gene_name) & max_value >= 0.15) %>%
+  distinct(gene_name) %>%
+  pull(gene_name)
+
+if(length(plotted_genes) > 5){
+  h.size <- ceiling(length(plotted_genes) / 5) # Adjust divisor to control vertical size
+}else{
+  h.size <- 3
+}
+
+ggsave(
+  plot = pb.all.ups,
+  filename = paste0("figures/", ct, ".genes.pb.results.heatmap.pdf"),
+  width = 4,
+  height = h.size,
+  limitsize = FALSE
+)
 }
