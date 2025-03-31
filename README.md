@@ -22,14 +22,15 @@ your_project/
 ## Setup Instructions
 ```bash
 conda env create -f environment.yml
-conda activate your_env_name
+conda activate EMAdown
 ```
 
 ## Pipeline Summary
 1. **01_Preprocess_LuCa_and_AUCell_macs.ipynb** – Load and QC the input data. Then, run AUCell for mac subtypes.
 2. **02_macs_predictions.R** – Create HieFIT cell type prediction model. 
 3. **03_inspect_ct_composition.R** – Inspect cell type compositions across samples.
-4. **04_PB-DEG.R** – Perform DEG on pseudo-bulked profiles.
+4. **04_PB-and-DESeq2.ipynb** – Perform DEG on pseudo-bulked profiles.
+5. **05_PB-DEG_inspect_results.R** - Inspect DEG expressions across macrophages.
 
 ## Figures
 All key plots are saved in `/figures`. The naming follows the manuscript figure order (e.g., `Figure1_PCA.png`, `Figure2_Volcano.pdf`).
