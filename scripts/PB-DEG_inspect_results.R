@@ -25,20 +25,6 @@ ps_macs_seu <- ScaleData(ps_macs_seu)
 #load DEGs
 ps_macs_deg <- read.csv("results/macs_PB-DEGs.csv")
 
-table(ps_macs_deg$gene_name)
-# bulk.all.7macs.de %>% 
-#     filter(pct.1 > 0.5) %>% 
-#     arrange(desc(avg_log2FC)) %>% 
-#     filter(avg_log2FC > 1.0) %>% 
-#     filter(p_val_adj < 0.05) -> All.up.markers.ps
-
-
-#All.up.markers.ps$GeneSymbol <- mapIds(org.Hs.eg.db, keys = All.up.markers.ps$gene, column = "SYMBOL", keytype = "ENSEMBL")
-#All.up.markers.ps
-
-#saveRDS(All.up.markers.ps, "data/PS.up.7macs.deg.rds")
-
-
 ### Explore the PB-based DEG results
 
 ps_macs_seu@meta.data %>% 
@@ -50,6 +36,23 @@ macs_7_types <- c("LA_TAMs", "Angio_TAMs", "Inflam_TAMs", "Prolif_TAMs", "Reg_TA
 
 ps_macs_seu@meta.data$SampleID <- rownames(ps_macs_seu@meta.data)
 custom_colors <- colorRampPalette(c("navy", "white", "red"))(50)
+
+#Explore the n_cell across samples/celltypes
+library(ggplot2)
+
+n_cells.types.plt <- ps_macs_seu@meta.data |>
+  ggplot(aes(x = Projection_CellType, y = log2_n_cells, fill = Projection_CellType)) +
+  geom_violin() +
+  theme_minimal() +  # Optional: Improve visualization
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Optional: Rotate x-axis labels if they overlap
+
+ggsave(
+  plot = n_cells.types.plt,
+  filename = "figures/n_cells.types.plt.pdf",
+  width = 7,
+  height = 4,
+  limitsize = FALSE
+)
 
 #print the heatmaps to separate pdf files
 for (ct in macs_7_types){
@@ -93,7 +96,7 @@ all_means %>%
 plotted_genes <- all_means %>%
   left_join(max_celltype, by = "gene_symbols") %>%
   mutate(gene_name = ifelse(ct == max_celltype, gene_name, NA)) %>%
-  filter(!is.na(gene_name) & max_value >= 0.15) %>%
+  filter(!is.na(gene_name) & max_value >= 0.0) %>%
   distinct(gene_name) %>%
   pull(gene_name)
 
