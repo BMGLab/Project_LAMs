@@ -39,7 +39,8 @@ process_disease <- function(macs, disease_name, output_filename, downsample_n = 
     cell_type_annotations = ct,
     method = method,
     g_min = g_min,
-    g_max = g_max
+    g_max = g_max,
+    verbose=TRUE
   )
   
   # Save to file
