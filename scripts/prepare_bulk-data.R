@@ -24,10 +24,11 @@ if (!file.exists("data/TCGA-Luad-Lusc-clinical_data.rds") | !file.exists("data/T
   clinical_data <- colData(data)
   saveRDS(clinical_data, "data/TCGA-Luad-Lusc-clinical_data.rds")
 }else{
+  print("processed data found!")
   tpm_data <- readRDS("data/TCGA-Luad-Lusc-tpm_data.rds")
   clinical_data <- readRDS("data/TCGA-Luad-Lusc-clinical_data.rds")
+  print("load complete!")
 }
-
 
 # Vector of diagnoses
 pr_diag <- c("Squamous cell carcinoma, NOS", "Adenocarcinoma, NOS")

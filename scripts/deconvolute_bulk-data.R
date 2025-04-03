@@ -8,14 +8,18 @@ token <- config$cibersortx$token
 # Set credentials
 omnideconv::set_cibersortx_credentials(username, token)
 
+print("Loading bulk expression data of TCGA for LUAD and LUSC...")
+bulk_ad <- readRDS("data/bulk_data_ad.rds")
+bulk_sq <- readRDS("data/bulk_data_sq.rds")
 
-signature_adeno <- readRDS("data/lung_adenocarcinoma_cibersortx_sig_mtrx.rds")
-adeno_bulk <- readRDS("data/luad_bulk.rds")
-deconvolution_adeno <- omnideconv::deconvolute(adeno_bulk, signature_adeno, method = "cibersortx")
-saveRDS(deconvolution_adeno, "data/14_02_2025_deconvolution_adeno.rds")
+print("Deconvolution of bulk LUAD with adenocarcinoma specific macrophage signature...")
+sig_mtx_ad <- readRDS("data/lung_adenocarcinoma_cibersortx_macs_sig_mtrx.rds")
+deconved_bulk_ad <- omnideconv::deconvolute(bulk_ad, sig_mtx_ad, method = "cibersortx")
+saveRDS(deconved_bulk_ad, "data/macs_deconved_bulk_ad.rds")
+print("done.")
 
-
-sq_bulk <- readRDS("/home/biolab/OzlemTuna/lusc_bulk.rds")
-signature_sq <- readRDS("data/squamous_cell_lung_carcinoma_cibersortx_sig_mtrx.rds")
-deconvolution_sq <- omnideconv::deconvolute(sq_bulk, signature_sq, method = "cibersortx")
-saveRDS(deconvolution_sq, "/home/biolab/OzlemTuna/14_02_2025_deconvolution_sq.rds")
+print("Deconvolution of bulk LUSC with squamous cell lc specific macrophage signature...")
+sig_mtx_sq <- readRDS("data/squamous_cell_lung_carcinoma_macs_cibersortx_sig_mtrx.rds")
+deconved_bulk_sq <- omnideconv::deconvolute(bulk_sq, sig_mtx_sq, method = "cibersortx")
+saveRDS(deconved_bulk_sq, "data/macs_deconved_bulk_sq.rds")
+print("done.")

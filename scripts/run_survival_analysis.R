@@ -57,13 +57,12 @@ perform_survival_analysis <- function(deconv_file, clinic_file, output_pdf) {
 }
 
 # Run the function for LUSC dataset
-perform_survival_analysis("data/filtered_lusc_deconv.rds",
-                          "data/lusc_clinic_with_stage.rds",
+perform_survival_analysis("data/macs_deconved_bulk_sq.rds",
+                          "data/clinic_data_sq.rds",
                           "figures/LUSC_Survival_Plots.pdf")
 
 # Run the function for LUAD dataset
-perform_survival_analysis("data/filtered_deconv_adeno.rds",
-                          "data/luad_clinic_with_stage.rds",
+perform_survival_analysis("data/macs_deconved_bulk_ad.rds",
+                          "data/clinic_data_ad.rds",
                           "figures/LUAD_Survival_Plots.pdf")
-
 
