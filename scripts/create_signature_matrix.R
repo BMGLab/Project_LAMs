@@ -1,7 +1,14 @@
 
 library(omnideconv)
 library(Seurat)
-set_cibersortx_credentials("180323041@ogr.cbu.edu.tr", "b823e05f9e499673fdff7001ea895fa8")#Will be masked later on.
+library(yaml)
+# Load the config
+config <- yaml::read_yaml("config.yaml")
+# Access credentials
+username <- config$cibersortx$username
+token <- config$cibersortx$token
+# Set credentials
+omnideconv::set_cibersortx_credentials(username, token)
 
 #load re-annotated macs data
 macs <- readRDS("data/luca_query_reannotated.rds")
@@ -12,13 +19,10 @@ macs_7_types <- c("LA_TAMs", "Angio_TAMs", "Inflam_TAMs", "Prolif_TAMs", "Reg_TA
 Idents(macs) <- "Projection_CellType"
 macs <- subset(macs, idents = macs_7_types)
 table(macs@meta.data$Projection_CellType)
-library(Seurat)
-library(omnideconv)
 
 process_disease <- function(macs, disease_name, output_filename, downsample_n = 200,
                             method = "cibersortx", g_min = 50, g_max = 100) {
   
-  set_cibersortx_credentials("180323041@ogr.cbu.edu.tr", "b823e05f9e499673fdff7001ea895fa8")#Will be masked later on.
   # Subset based on disease and primary tumor origin
   macs_sub <- subset(macs, subset = disease == disease_name)
   macs_sub <- subset(macs_sub, subset = origin == "tumor_primary")
@@ -42,7 +46,7 @@ process_disease <- function(macs, disease_name, output_filename, downsample_n = 
     g_max = g_max,
     verbose=TRUE
   )
-  
+
   # Save to file
   saveRDS(sig_mtx, output_filename)
   

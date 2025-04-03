@@ -23,7 +23,7 @@ ps_macs_seu@meta.data |> head()
 Idents(ps_macs_seu) <- "Projection_CellType"
 ps_macs_seu <- ScaleData(ps_macs_seu)
 #load DEGs
-ps_macs_deg <- read.csv("results/macs_PB-DEGs.csv")
+ps_macs_deg <- read.csv("results/macs_PB-DEGs_repeated.csv")
 
 ### Explore the PB-based DEG results
 
