@@ -64,32 +64,3 @@ sig_mtx_sq <- process_disease(
   disease_name = "squamous cell lung carcinoma",
   output_filename = "data/squamous_cell_lung_carcinoma_cibersortx_sig_mtrx.rds"
 )
-
-
-
-
-
-
-celltype <- readRDS("~/Documents/luca_celltype_ann.rds")
-matrx <- readRDS("~/Documents/luca_data_matrix.rds")
-celltype <- as.vector(celltype)
-class(celltype)
-
-omnideconv::build_model_cibersortx()
-
-
-omnideconv::set_cibersortx_credentials("180323041@ogr.cbu.edu.tr","b823e05f9e499673fdff7001ea895fa8")
-signature_matrix_adeno <- omnideconv::build_model(single_cell_object = matrx, cell_type_annotations = celltype,method = "cibersortx")
-saveRDS(signature_matrix_adeno, file = "~/Documents/luca-7Macs.cbrsrtx.signature.mtx.rds")
-
-luadbulk <- readRDS("~/Documents/Adeno_bulk.rds")
-luscbulk <- readRDS("~/Documents/Squamous_bulk.rds")
-
-deconvolution_adeno <- omnideconv::deconvolute(luadbulk, signature_matrix_adeno, method = "cibersortx")
-
-saveRDS(deconvolution_adeno, file = "~/Documents/TCGA-LUAD-7Macs.deconvoluted.rds")
-
-
-deconvolution_squamoz <- omnideconv::deconvolute(luscbulk, signature_matrix_adeno, method = "cibersortx")
-
-saveRDS(deconvolution_squamoz, file = "~/Documents/TCGA-LUSC-7Macs.deconvoluted.rds")
