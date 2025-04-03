@@ -1,85 +1,63 @@
 # Load necessary libraries
 library(dplyr)
-library(readr)  
-library(TCGAbiolinks)
+library(readr)
 library(SummarizedExperiment)
 
-query.exp <- GDCquery(
-  project = c("TCGA-LUAD", "TCGA-LUSC"),
-  data.category = "Transcriptome Profiling",
-  data.type = "Gene Expression Quantification",
-  workflow.type = "STAR - Counts",
-  access = "open"
-)
 
-GDCdownload(query.exp, directory = "data/")
+if (!file.exists("data/TCGA-Luad-Lusc-clinical_data.rds") | !file.exists("data/TCGA-Luad-Lusc-tpm_data.rds") ) {
+  print("need to download from TCGA!")
+  library(TCGAbiolinks)
 
-data <- GDCprepare(query.exp, directory = "data/")
+  query.exp <- GDCquery(
+    project = c("TCGA-LUAD", "TCGA-LUSC"),
+    data.category = "Transcriptome Profiling",
+    data.type = "Gene Expression Quantification",
+    workflow.type = "STAR - Counts",
+    access = "open")
 
-tpm_data <- assay(data, "tpm_unstrand")
-saveRDS(tpm_data, "data/TCGA-Luad-Lusc-tpm_data.rds")
+  GDCdownload(query.exp, directory = "data/")
 
-clinical_data <- colData(data)
-saveRDS(clinical_data, "data/TCGA-Luad-Lusc-clinical_data.rds")
+  data <- GDCprepare(query.exp, directory = "data/")
 
-
-
-# Convert to data frame if needed
-clean_clinical_data <- function(df) {
-  clinical_columns <- c("primary_diagnosis", "vital_status", 
-                        "days_to_last_follow_up", "ajcc_pathologic_stage")
-
-  # Select available columns safely
-  existing_columns <- clinical_columns[clinical_columns %in% colnames(df)]
-  df <- df %>% dplyr::select(all_of(existing_columns))
-
-  # Handle missing survival columns
-  has_os <- "overall_survival" %in% colnames(df) && !all(is.na(df$overall_survival))
-  has_death <- "days_to_death" %in% colnames(df) && !all(is.na(df$days_to_death))
-
-  # Fill survival time
-  if (has_os) {
-    df$overall_survival <- as.numeric(df$overall_survival)
-  } else if (has_death) {
-    df$overall_survival <- as.numeric(df$days_to_death)
-  } else {
-    warning("No usable survival time found in 'overall_survival' or 'days_to_death'. Filling with NA.")
-    df$overall_survival <- NA_real_
-  }
-
-  # Handle vital_status
-  if (!"vital_status" %in% colnames(df)) {
-    warning("'vital_status' column not found. Filling with NA.")
-    df$vital_status <- NA
-  }
-
-  # Handle follow-up
-  if (!"days_to_last_follow_up" %in% colnames(df)) {
-    warning("'days_to_last_follow_up' column not found. Filling with NA.")
-    df$days_to_last_follow_up <- NA_real_
-  }
-
-  # Final calculations
-  df <- df %>%
-    mutate(
-      deceased = vital_status != "Alive",
-      overall_survival = ifelse(vital_status == "Alive",
-                                days_to_last_follow_up,
-                                overall_survival),
-      vital_status = as.factor(vital_status)
-    )
-
-  return(as.data.frame(df))
+  tpm_data <- assay(data, "tpm_unstrand")
+  saveRDS(tpm_data, "data/TCGA-Luad-Lusc-tpm_data.rds")
+  clinical_data <- colData(data)
+  saveRDS(clinical_data, "data/TCGA-Luad-Lusc-clinical_data.rds")
+}else{
+  tpm_data <- readRDS("data/TCGA-Luad-Lusc-tpm_data.rds")
+  clinical_data <- readRDS("data/TCGA-Luad-Lusc-clinical_data.rds")
 }
 
 
+# Vector of diagnoses
+pr_diag <- c("Squamous cell carcinoma, NOS", "Adenocarcinoma, NOS")
 
-# Clean and save each type
-only_primary_lusc_clean <- clean_clinical_data(only_primary_lusc)
-saveRDS(only_primary_lusc_clean, "data/lusc_clinic_for_bulk.rds")
+# Define a general function
+process_clinical_data <- function(df, diagnosis, output_path) {
+  processed <- df %>%
+    as.data.frame() %>%
+    mutate(
+      Tumor.stage = ifelse(paper_Tumor.stage == "[Not Available]", NA, paper_Tumor.stage),
+      Tumor.stage = ifelse(is.na(ajcc_pathologic_stage), NA, ajcc_pathologic_stage)
+    ) %>%
+    filter(!is.na(Tumor.stage)) %>%
+    filter(sample_type == "Primary Tumor") %>%
+    filter(primary_diagnosis == diagnosis) %>%
+    mutate(
+      overall_survival = ifelse(
+        vital_status == "Alive",
+        as.numeric(days_to_last_follow_up),
+        as.numeric(days_to_death)
+      ),
+      deceased = vital_status != "Alive",
+      vital_status = as.factor(vital_status)
+    ) %>%
+    select(primary_diagnosis, vital_status, days_to_last_follow_up,
+           overall_survival, Tumor.stage, deceased)
 
-only_primary_luad_clean <- clean_clinical_data(only_primary_luad)
-saveRDS(only_primary_luad_clean, "data/luad_clinic_for_bulk.rds")
+  saveRDS(processed, output_path)
+  return(processed)
+}
 
 # Prepare bulk TPM data
 prepare_bulk_data <- function(clinical_df, tpm_data, output_path) {
@@ -89,6 +67,11 @@ prepare_bulk_data <- function(clinical_df, tpm_data, output_path) {
   saveRDS(bulk_data, output_path)
 }
 
-# Apply for each disease type
-prepare_bulk_data(only_primary_luad_clean, tpm_data, "data/luad_bulk.rds")
-prepare_bulk_data(only_primary_lusc_clean, tpm_data, "data/lusc_bulk.rds")
+# Run for each diagnosis
+for (diag in pr_diag) {
+  label <- if (grepl("Squamous", diag)) "sq" else "ad"
+  cln_outfile <- paste0("data/clinic_data_", label, ".rds")
+  exp_outfile <- paste0("data/bulk_data_", label, ".rds")
+  cln_df <- process_clinical_data(clinical_data, diagnosis = diag, output_path = cln_outfile)
+  prepare_bulk_data(cln_df, tpm_data = tpm_data, exp_outfile)
+}
