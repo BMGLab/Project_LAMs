@@ -31,9 +31,14 @@ conda activate EMAdown
 3. **03_inspect_ct_composition.R** – Inspect cell type compositions across samples.
 4. **04_PB-and-DESeq2.ipynb** – Perform DEG on pseudo-bulked profiles.
 5. **05_PB-DEG_inspect_results.R** - Inspect DEG expressions across macrophages.
+6. **06_create_signature_matrix.R** - Create cell type signature matrix for deconvolution with CiberSortX.
+7. **07_prepare_bulk-data.R** - Fetch TCGA lung cancer bulk datasets and prepare.
+8. **08_deconvolute_bulk-data.R** - Estimate macrophage composition of bulk RNAseq data.
+9. **09_run_survival_analysis.R** - Correlate macrophage compositons with prognosis using Kaplan-Meier survival analysis.
+
 
 ## Figures
-All key plots are saved in `/figures`. The naming follows the manuscript figure order (e.g., `Figure1_PCA.png`, `Figure2_Volcano.pdf`).
+All key plots are saved in `figures/`. The naming follows the manuscript figure order (e.g., `Figure1_PCA.png`, `Figure2_Volcano.pdf`).
 
 ## Reproducibility
 - All scripts use fixed random seeds.

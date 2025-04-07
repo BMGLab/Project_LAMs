@@ -7,6 +7,9 @@ library(org.Hs.eg.db)
 library(AnnotationDbi)
 library("zellkonverter")
 
+macs_7_types <- c("LA_TAMs", "Angio_TAMs", "Inflam_TAMs", "Prolif_TAMs", "Reg_TAMs", "RTM_TAMs", "IFN_TAMs")
+
+
 #load re-annotated macs data
 macs <- readRDS("data/luca_query_reannotated.rds")
 
@@ -25,13 +28,46 @@ ps_macs_seu <- ScaleData(ps_macs_seu)
 #load DEGs
 ps_macs_deg <- read.csv("results/macs_PB-DEGs_repeated.csv")
 
+#check exp
+ps_macs_deg |>
+  group_by(gene_name, gene_symbols, SubType) |>
+  summarize(
+    mean_l2fc = mean(log2FoldChange, na.rm = TRUE), 
+    mean_bm = mean(baseMean, na.rm = TRUE)) |>
+  group_by(SubType) |>
+  arrange(desc(mean_l2fc), desc(mean_bm)) |>
+  filter(mean_bm > 10.0) |>
+  slice_head(n = 3) |>
+  ungroup() |>
+  as.data.frame() -> top_genes
+
+# Generate a color palette with enough distinct colors
+colors_needed <- length(macs_7_types)
+color_palette <- RColorBrewer::brewer.pal(min(12, colors_needed), "Set1")  # Choose a palette
+
+ps_macs_sub <- subset(ps_macs_seu, idents = macs_7_types)
+ps_macs_sub$Projection_CellType <- droplevels(as.factor(as.character(ps_macs_sub$Projection_CellType)))
+ps_macs_sub$Projection_CellType <- as.factor(trimws(as.character(ps_macs_sub$Projection_CellType)))
+
+# Use DotPlot with the updated color palette
+n_cells.types.plt <- DotPlot(ps_macs_sub, features = unique(top_genes$gene_symbols), 
+        cols = color_palette, dot.scale = 8, split.by = "Projection_CellType") +
+        RotatedAxis()
+
+ggsave(
+  plot = n_cells.types.plt,
+  filename = "figures/dot.plt.top.deg.pdf",
+  width = 14,
+  height = 4,
+  limitsize = FALSE
+)
+
 ### Explore the PB-based DEG results
 
 ps_macs_seu@meta.data %>% 
   filter(Projection_CellType %in% c("LA_TAMs", "Angio_TAMs", "Inflam_TAMs", "Prolif_TAMs", "Reg_TAMs", "RTM_TAMs", "IFN_TAMs") ) %>%
   rownames() -> cells.7macs.class
 
-macs_7_types <- c("LA_TAMs", "Angio_TAMs", "Inflam_TAMs", "Prolif_TAMs", "Reg_TAMs", "RTM_TAMs", "IFN_TAMs")
 
 
 ps_macs_seu@meta.data$SampleID <- rownames(ps_macs_seu@meta.data)
