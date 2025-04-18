@@ -16,12 +16,12 @@ lung_config = {
 				'spaceranger110_count_39586_OTAR_LNGsp10391235_GRCh38-2020-A',
 				'spaceranger110_count_38262_OTAR_LNGsp10206165_GRCh38-2020-A'],
 
-				"LUSC": ['spaceranger110_count_36210_OTAR_LNGsp9476045_GRCh38-2020-A',
-						'spaceranger110_count_36210_OTAR_LNGsp9476044_GRCh38-2020-A',
-						'spaceranger110_count_38262_OTAR_LNGsp10206168_GRCh38-2020-A',
-						'spaceranger110_count_38262_OTAR_LNGsp10206167_GRCh38-2020-A',
-						'spaceranger110_count_36210_OTAR_LNGsp9476042_GRCh38-2020-A',
-						'spaceranger110_count_36210_OTAR_LNGsp9476043_GRCh38-2020-A']
+				"LUSC": 
+                    ['spaceranger110_count_36210_OTAR_LNGsp9476045_GRCh38-2020-A',
+					'spaceranger110_count_38262_OTAR_LNGsp10206168_GRCh38-2020-A',
+					'spaceranger110_count_38262_OTAR_LNGsp10206167_GRCh38-2020-A',
+					'spaceranger110_count_36210_OTAR_LNGsp9476042_GRCh38-2020-A',
+					'spaceranger110_count_36210_OTAR_LNGsp9476043_GRCh38-2020-A']
 			}
             #"spatial": ['P19_T2', 'P25_T2', 'P15_T2', 'P11_T1', 'P11_T3', 'P17_T2', 'P11_T2', 'P10_T3', 'P17_T1', 'P10_T2', 'P11_T4', 'P15_T1', 'P24_T2', 'P24_T1', 'P10_T4', 'P19_T1', 'P16_T1', 'P10_T1', 'P16_T2', 'P25_T1'],
             #, 'P11_T2', 'P19_T1', 'P17_T2', 'P10_T2', 'P11_T3', 'P19_T2', 'P25_T1', 'P10_T3', 'P11_T4', 'P15_T1', 'P25_T2', 'P10_T4', 'P16_T1', 'P15_T2', 'P24_T1', 'P11_T1', 'P16_T2', 'P17_T1', 'P24_T2']

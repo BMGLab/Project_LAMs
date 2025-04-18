@@ -32,7 +32,6 @@ sample_names = [
         'spaceranger110_count_36209_OTAR_LNGsp9476038_GRCh38-2020-A',
         'spaceranger110_count_36209_OTAR_LNGsp9476040_GRCh38-2020-A',
         'spaceranger110_count_36210_OTAR_LNGsp9476042_GRCh38-2020-A',
-        'spaceranger110_count_36210_OTAR_LNGsp9476044_GRCh38-2020-A',
         'spaceranger110_count_36209_OTAR_LNGsp9476039_GRCh38-2020-A',
         'spaceranger110_count_36209_OTAR_LNGsp9476041_GRCh38-2020-A',
         'spaceranger110_count_36210_OTAR_LNGsp9476043_GRCh38-2020-A',
