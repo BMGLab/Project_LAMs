@@ -37,16 +37,24 @@ lung_config = {
         "Background": {
             "remove": ["Mast cells,7 (to remove)", "Mast cells,9 (to remove)", "8,1"],
             "name": "Cell types v12",
-            "spatial": ["spaceranger110_count_40751_OTAR_LNGsp10782317_GRCh38-2020-A",
-                        "spaceranger110_count_40612_OTAR_LNGsp10782311_GRCh38-2020-A",
-                        "spaceranger110_count_40952_OTAR_LNGsp10922370_GRCh38-2020-A",
-                        "spaceranger110_count_40951_OTAR_LNGsp10922368_GRCh38-2020-A",
-                        "spaceranger110_count_40751_OTAR_LNGsp10782316_GRCh38-2020-A",
-                        "spaceranger110_count_40952_OTAR_LNGsp10922371_GRCh38-2020-A",
-                        "spaceranger110_count_40612_OTAR_LNGsp10782310_GRCh38-2020-A",
-                        "spaceranger110_count_40951_OTAR_LNGsp10922367_GRCh38-2020-A",
-                        "spaceranger110_count_40952_OTAR_LNGsp10922369_GRCh38-2020-A",
-                        "spaceranger110_count_40952_OTAR_LNGsp10922372_GRCh38-2020-A"]
+            "spatial": { "LUAD" : 
+                ["spaceranger110_count_40952_OTAR_LNGsp10922372_GRCh38-2020-A",
+                "spaceranger110_count_40952_OTAR_LNGsp10922371_GRCh38-2020-A",
+                "spaceranger110_count_40952_OTAR_LNGsp10922370_GRCh38-2020-A",
+                "spaceranger110_count_40952_OTAR_LNGsp10922369_GRCh38-2020-A",
+                "spaceranger110_count_40951_OTAR_LNGsp10922368_GRCh38-2020-A",
+                "spaceranger110_count_40951_OTAR_LNGsp10922367_GRCh38-2020-A",
+                "spaceranger110_count_40751_OTAR_LNGsp10782316_GRCh38-2020-A", 
+                "spaceranger110_count_40612_OTAR_LNGsp10782311_GRCh38-2020-A",
+                "spaceranger110_count_40612_OTAR_LNGsp10782310_GRCh38-2020-A"],
+                
+                "LUSC" : 
+                    ["spaceranger110_count_40751_OTAR_LNGsp10782315_GRCh38-2020-A",   
+                    "spaceranger110_count_40751_OTAR_LNGsp10782314_GRCh38-2020-A",
+                    "spaceranger110_count_40612_OTAR_LNGsp10782313_GRCh38-2020-A",
+                    "spaceranger110_count_40612_OTAR_LNGsp10782312_GRCh38-2020-A"]
+                    
+            }
         },
         "LR pairs": [
                          'CD55_ADGRE5',

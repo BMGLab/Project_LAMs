@@ -30,12 +30,37 @@ outDir = "/nfs/research1/gerstung/nelson/outputs/lung/"
 
 sample_names = [
         'spaceranger110_count_36209_OTAR_LNGsp9476038_GRCh38-2020-A',
-        'spaceranger110_count_36209_OTAR_LNGsp9476040_GRCh38-2020-A',
-        'spaceranger110_count_36210_OTAR_LNGsp9476042_GRCh38-2020-A',
-        'spaceranger110_count_36209_OTAR_LNGsp9476039_GRCh38-2020-A',
-        'spaceranger110_count_36209_OTAR_LNGsp9476041_GRCh38-2020-A',
-        'spaceranger110_count_36210_OTAR_LNGsp9476043_GRCh38-2020-A',
-        'spaceranger110_count_36210_OTAR_LNGsp9476045_GRCh38-2020-A'
+		'spaceranger110_count_39586_OTAR_LNGsp10391238_GRCh38-2020-A',
+		'spaceranger110_count_39586_OTAR_LNGsp10391237_GRCh38-2020-A',
+		'spaceranger110_count_36209_OTAR_LNGsp9476039_GRCh38-2020-A',
+		'spaceranger110_count_38262_OTAR_LNGsp10206166_GRCh38-2020-A',
+		'spaceranger110_count_36209_OTAR_LNGsp9476040_GRCh38-2020-A',
+		'spaceranger110_count_38385_OTAR_LNGsp10206158_GRCh38-2020-A',
+		'spaceranger110_count_38385_OTAR_LNGsp10206157_GRCh38-2020-A',
+		'spaceranger110_count_39586_OTAR_LNGsp10391236_GRCh38-2020-A',
+		'spaceranger110_count_36209_OTAR_LNGsp9476041_GRCh38-2020-A',
+		'spaceranger110_count_39586_OTAR_LNGsp10391235_GRCh38-2020-A',
+		'spaceranger110_count_38262_OTAR_LNGsp10206165_GRCh38-2020-A',
+        'spaceranger110_count_36210_OTAR_LNGsp9476045_GRCh38-2020-A',
+		'spaceranger110_count_38262_OTAR_LNGsp10206168_GRCh38-2020-A',
+		'spaceranger110_count_38262_OTAR_LNGsp10206167_GRCh38-2020-A',
+		'spaceranger110_count_36210_OTAR_LNGsp9476042_GRCh38-2020-A',
+		'spaceranger110_count_36210_OTAR_LNGsp9476043_GRCh38-2020-A',
+        'spaceranger110_count_38384_OTAR_LNGsp10206161_GRCh38-2020-A',
+        'spaceranger110_count_38384_OTAR_LNGsp10206162_GRCh38-2020-A',
+        'spaceranger110_count_38384_OTAR_LNGsp10206163_GRCh38-2020-A',
+        'spaceranger110_count_38384_OTAR_LNGsp10206164_GRCh38-2020-A',
+        'spaceranger110_count_40751_OTAR_LNGsp10782317_GRCh38-2020-A',
+        'spaceranger110_count_40612_OTAR_LNGsp10782311_GRCh38-2020-A',
+        'spaceranger110_count_40952_OTAR_LNGsp10922370_GRCh38-2020-A',
+        'spaceranger110_count_40951_OTAR_LNGsp10922368_GRCh38-2020-A',
+        'spaceranger110_count_40751_OTAR_LNGsp10782316_GRCh38-2020-A',
+        'spaceranger110_count_40952_OTAR_LNGsp10922371_GRCh38-2020-A',
+        'spaceranger110_count_40612_OTAR_LNGsp10782310_GRCh38-2020-A',
+        'spaceranger110_count_40951_OTAR_LNGsp10922367_GRCh38-2020-A',
+        'spaceranger110_count_40952_OTAR_LNGsp10922369_GRCh38-2020-A',
+        'spaceranger110_count_40952_OTAR_LNGsp10922372_GRCh38-2020-A'
+        
 ]
 
 def read_and_qc(sample_name, path=inDir):
