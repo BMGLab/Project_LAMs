@@ -1,0 +1,24 @@
+name: sccoda-gpu
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - cudatoolkit=12.2
+  - cudnn=9.8
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - seaborn
+  - scanpy
+  - anndata
+  - pip:
+      - jax==0.4.28
+      - jaxlib==0.4.28+cuda12.cudnn89
+      - pertpy
+      - sccoda
+      - arviz
+      - ete3
+      - toytree

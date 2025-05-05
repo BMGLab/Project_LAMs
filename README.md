@@ -36,6 +36,8 @@ conda activate EMAdown
 8. **08_deconvolute_bulk-data.R** - Estimate macrophage composition of bulk RNAseq data.
 9. **09_run_survival_analysis.R** - Correlate macrophage compositons with prognosis using Kaplan-Meier survival analysis.
 
+to run sccoda scripts: conda activate sccoda-gpu
+
 
 ## Figures
 All key plots are saved in `figures/`. The naming follows the manuscript figure order (e.g., `Figure1_PCA.png`, `Figure2_Volcano.pdf`).

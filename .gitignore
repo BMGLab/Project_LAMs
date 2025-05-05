@@ -17,6 +17,7 @@ docs/
 # Ignore environment or cache
 .conda/
 .venv/
+venv/
 __pycache__/
 .DS_Store
 
