@@ -96,7 +96,6 @@ plt.tight_layout()
 plt.savefig("figures/facs_M1_vs_M2_expression_by_tumor_stage.pdf")
 plt.close()
 
-
 # --- Unified heatmap: column-scaled (z-score) M1 and M2 scores per cell type ---
 
 # Compute raw mean scores
@@ -116,16 +115,27 @@ heatmap_scaled_df = pd.DataFrame(
     columns=heatmap_joint_df.columns
 )
 
-# Plot scaled heatmap
-plt.figure(figsize=(4, max(4, 0.5 * heatmap_scaled_df.shape[0])))
-sns.heatmap(heatmap_scaled_df, annot=True, cmap="vlag", center=0, fmt=".2f")
-plt.title("Scaled M1 and M2 scores")
-plt.xlabel("Gene Signature")
-plt.ylabel("Macrophage Subtype")
+# Transpose to reverse rows and columns
+heatmap_scaled_df_T = heatmap_scaled_df.T
+
+# Plot the transposed (columns <-> rows) scaled heatmap
+plt.figure(figsize=(max(6, 0.5 * heatmap_scaled_df_T.shape[1]), 3))
+sns.heatmap(
+    heatmap_scaled_df_T,
+    annot=True,
+    cmap="vlag",
+    center=0,
+    fmt=".2f",
+    cbar_kws={'orientation': 'vertical'}
+)
+plt.title("Scaled M1 and M2 Expression by Macrophage Subtype")
+plt.xlabel("Macrophage Subtype")
+plt.ylabel("Gene Signature")
+plt.xticks(rotation=90)  # rotate column labels (macrophage subtypes)
+plt.yticks(rotation=0)   # vertical row labels (M1/M2)
 plt.tight_layout()
-plt.savefig("figures/heatmap_zscore_M1_M2_expression_by_celltype.pdf")
+plt.savefig("figures/heatmap_zscore_M1_M2_expression_by_celltype_transposed.pdf")
 plt.close()
 
-# Save scaled data
-heatmap_scaled_df.to_csv("figures/heatmap_zscore_M1_M2_expression_data.csv")
-
+# Save transposed heatmap data
+heatmap_scaled_df_T.to_csv("figures/heatmap_zscore_M1_M2_expression_data_transposed.csv")
