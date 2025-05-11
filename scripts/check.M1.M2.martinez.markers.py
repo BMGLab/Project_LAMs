@@ -67,43 +67,49 @@ adata.obs['M1_score'] = adata[:, m1_genes].X.mean(axis=1)
 adata.obs['M2_score'] = adata[:, m2_genes].X.mean(axis=1)
 
 # --- Step 5: FACS-style scatter plot ---
-plt.figure(figsize=(6, 6))
-scatter = sns.scatterplot(
-    x=adata.obs['M1_score'].A1 if hasattr(adata.obs['M1_score'], 'A1') else adata.obs['M1_score'],
-    y=adata.obs['M2_score'].A1 if hasattr(adata.obs['M2_score'], 'A1') else adata.obs['M2_score'],
-    hue=adata.obs['Projection_CellType'],
-    alpha=0.5,
-    s=2  # marker size in plot
-)
+# plt.figure(figsize=(6, 6))
+# scatter = sns.scatterplot(
+#     x=adata.obs['M1_score'].A1 if hasattr(adata.obs['M1_score'], 'A1') else adata.obs['M1_score'],
+#     y=adata.obs['M2_score'].A1 if hasattr(adata.obs['M2_score'], 'A1') else adata.obs['M2_score'],
+#     hue=adata.obs['Projection_CellType'],
+#     alpha=0.5,
+#     s=2  # marker size in plot
+# )
 
-# Customize legend marker size
-handles, labels = scatter.get_legend_handles_labels()
-scatter.legend(
-    handles=handles,
-    labels=labels,
-    title="Macrophage Subtype",
-    bbox_to_anchor=(1.05, 1),
-    loc='upper left',
-    borderaxespad=0.,
-    markerscale=.5  # 🔥 Increase this value to enlarge legend dot size
-)
-plt.xlabel("Mean M1 Gene Expression")
-plt.ylabel("Mean M2 Gene Expression")
-plt.title("FACS-style Plot: M1 vs M2 Expression")
-plt.legend(title="Macrophage type", bbox_to_anchor=(1.05, 1), loc='upper left')
-plt.grid(True)
-plt.tight_layout()
-plt.savefig("figures/facs_M1_vs_M2_expression_by_tumor_stage.pdf")
-plt.close()
+# # Customize legend marker size
+# handles, labels = scatter.get_legend_handles_labels()
+# scatter.legend(
+#     handles=handles,
+#     labels=labels,
+#     title="Macrophage Subtype",
+#     bbox_to_anchor=(1.05, 1),
+#     loc='upper left',
+#     borderaxespad=0.,
+#     markerscale=.5  # 🔥 Increase this value to enlarge legend dot size
+# )
+# plt.xlabel("Mean M1 Gene Expression")
+# plt.ylabel("Mean M2 Gene Expression")
+# plt.title("FACS-style Plot: M1 vs M2 Expression")
+# plt.legend(title="Macrophage type", bbox_to_anchor=(1.05, 1), loc='upper left')
+# plt.grid(True)
+# plt.tight_layout()
+# plt.savefig("figures/facs_M1_vs_M2_expression_by_tumor_stage.pdf")
+# plt.close()
 
-# --- Unified heatmap: column-scaled (z-score) M1 and M2 scores per cell type ---
+# --- Reordered heatmap: M1 and M2 scores per Projection_CellType (vertical orientation) ---
 
-# Compute raw mean scores
+# Desired cell type order
+ordered_celltypes = [
+    "RTM_TAMs", "Prolif_TAMs", "Angio_TAMs",
+    "Inflam_TAMs", "IFN_TAMs", "LA_TAMs", "Reg_TAMs"
+]
+
+# Compute and reorder mean scores
 heatmap_joint_df = (
     adata.obs
     .groupby("Projection_CellType")[["M1_score", "M2_score"]]
     .mean()
-    .sort_index()
+    .reindex(ordered_celltypes)
 )
 
 # Scale by column (z-score)
@@ -115,27 +121,24 @@ heatmap_scaled_df = pd.DataFrame(
     columns=heatmap_joint_df.columns
 )
 
-# Transpose to reverse rows and columns
-heatmap_scaled_df_T = heatmap_scaled_df.T
-
-# Plot the transposed (columns <-> rows) scaled heatmap
-plt.figure(figsize=(max(6, 0.5 * heatmap_scaled_df_T.shape[1]), 3))
+# Plot vertical heatmap (rows = Projection_CellType, columns = M1/M2)
+plt.figure(figsize=(4, max(4, 0.6 * len(heatmap_scaled_df))))
 sns.heatmap(
-    heatmap_scaled_df_T,
+    heatmap_scaled_df,
     annot=True,
     cmap="vlag",
     center=0,
     fmt=".2f",
     cbar_kws={'orientation': 'vertical'}
 )
-plt.title("Scaled M1 and M2 Expression by Macrophage Subtype")
-plt.xlabel("Macrophage Subtype")
-plt.ylabel("Gene Signature")
-plt.xticks(rotation=90)  # rotate column labels (macrophage subtypes)
-plt.yticks(rotation=0)   # vertical row labels (M1/M2)
+#plt.title("Z-scored M1 and M2 Expression by Macrophage Subtype")
+plt.xlabel("Gene Signature")
+#plt.ylabel("Macrophage Subtype")
+plt.xticks(rotation=0)
+plt.yticks(rotation=0)
 plt.tight_layout()
-plt.savefig("figures/heatmap_zscore_M1_M2_expression_by_celltype_transposed.pdf")
+plt.savefig("figures/heatmap_zscore_M1_M2_expression_by_celltype_ordered.pdf")
 plt.close()
 
-# Save transposed heatmap data
-heatmap_scaled_df_T.to_csv("figures/heatmap_zscore_M1_M2_expression_data_transposed.csv")
+# Save data
+heatmap_scaled_df.to_csv("figures/heatmap_zscore_M1_M2_expression_data_ordered.csv")
