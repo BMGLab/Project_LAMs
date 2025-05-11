@@ -92,7 +92,7 @@ heatmap_scaled = pd.DataFrame(
 g = sns.clustermap(
     heatmap_scaled,
     cmap="vlag",
-    figsize=(16, 8),
+    figsize=(30, 6),
     linewidths=0.5,
     metric='euclidean',   # Distance metric for clustering
     method='average',     # Linkage method for clustering
