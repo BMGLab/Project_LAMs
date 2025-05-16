@@ -1,4 +1,4 @@
-library("HieRFIT")
+#library("HieRFIT")
 library("Seurat")
 library(tidyverse)
 library(dplyr)
@@ -110,11 +110,13 @@ max_celltype <- all_means %>%
   slice_max(order_by = mean_value, n = 1, with_ties = FALSE) %>%
   dplyr::select(gene_symbols, max_celltype = Projection_CellType, max_value = mean_value)
 
+print(head(all_means$mean_value))
+print(median(all_means$mean_value))
 # Step 3: Join, filter, and plot heatmap
 all_means %>%
   left_join(max_celltype, by = "gene_symbols") %>%
   mutate(gene_name = ifelse(ct == max_celltype, gene_name, NA)) %>%
-  filter(!is.na(gene_name) & max_value >= 0.25) %>%
+  filter(!is.na(gene_name) & max_value >= median(all_means$mean_value)) %>%
   ggplot(aes(x = Projection_CellType, y = factor(gene_name, levels = rev(unique(gene_name))), fill = mean_value)) +
   geom_tile() +
   scale_fill_gradientn(colors = custom_colors, na.value = "grey50") +
@@ -132,7 +134,7 @@ all_means %>%
 plotted_genes <- all_means %>%
   left_join(max_celltype, by = "gene_symbols") %>%
   mutate(gene_name = ifelse(ct == max_celltype, gene_name, NA)) %>%
-  filter(!is.na(gene_name) & max_value >= 0.0) %>%
+  filter(!is.na(gene_name) & max_value >= median(all_means$mean_value)) %>%
   distinct(gene_name) %>%
   pull(gene_name)
 
