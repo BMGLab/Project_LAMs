@@ -150,3 +150,62 @@ ggsave(
   limitsize = FALSE
 )
 }
+
+
+# Stage based heatmap for LA_TAMs
+# Subset LA_TAMs cells only
+la_tams <- subset(ps_macs_seu, subset = Projection_CellType == "LA_TAMs")
+la_tams$uicc_stage <- factor(la_tams$uicc_stage)
+
+# Select top LA_TAMs marker genes
+la_top_genes <- ps_macs_deg %>%
+  filter(SubType == "LA_TAMs") %>%
+  group_by(gene_name, gene_symbols) %>%
+  summarize(mean_l2fc = mean(log2FoldChange, na.rm = TRUE),
+            mean_bm = mean(baseMean, na.rm = TRUE)) %>%
+  filter(mean_bm > 10) %>%
+  arrange(desc(mean_l2fc)) %>%
+  slice_head(n = 6)
+
+# Pull unique genes
+la_gene_symbols <- unique(la_top_genes$gene_symbols)
+
+# Subset expression matrix for LA_TAMs cells and selected genes
+la_expr_scaled <- la_tams@assays$originalexp$scale.data[la_gene_symbols, ]
+
+# Melt and join with metadata
+la_expr_df <- la_expr_scaled %>%
+  reshape2::melt() %>%
+  dplyr::rename(gene_symbol = Var1, SampleID = Var2)
+
+la_expr_df <- la_expr_df %>%
+  left_join(la_tams@meta.data[, c("SampleID", "uicc_stage")], by = "SampleID") %>%
+  group_by(gene_symbol, uicc_stage) %>%
+  summarize(mean_value = mean(value, na.rm = TRUE), .groups = "drop")
+
+# Optional: re-level UICC stages for better plotting
+la_expr_df$uicc_stage <- factor(la_expr_df$uicc_stage, levels = c("Stage I", "Stage II", "Stage III", "Stage IV"))
+
+# Plot heatmap
+la_heatmap <- ggplot(la_expr_df, aes(x = uicc_stage, y = factor(gene_symbol, levels = rev(unique(gene_symbol))), fill = mean_value)) +
+  geom_tile(color = "white") +
+  scale_fill_gradientn(colors = custom_colors, na.value = "grey70") +
+  theme_minimal() +
+  labs(
+    title = "LA_TAMs Gene Expression Across UICC Stages",
+    x = "UICC Stage",
+    y = "Gene Symbol",
+    fill = "Mean Expression"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Save plot
+ggsave(
+  plot = la_heatmap,
+  filename = "figures/la_tams.uicc_stage.heatmap.pdf",
+  width = 5,
+  height = 4,
+  limitsize = FALSE
+)
+
+

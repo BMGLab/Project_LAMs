@@ -16,7 +16,7 @@ la_genes <- deg_data %>%
   pull(gene_name)
 
 # Generate and save cancer plot
-pdf("figures/histopathology_lung_cancer_LA_TAMs.pdf", width = 10, height = 6)
+pdf("figures/histopathology_lung_cancer_LA_TAMs.pdf", width = 10, height = 3)
 hpaVis(targetGene = la_genes,
        visType = "Cancer",
        targetCancer = "lung cancer")
