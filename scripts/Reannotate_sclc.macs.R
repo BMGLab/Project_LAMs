@@ -15,14 +15,12 @@ sclc_macs <- subset(sclc, cell_type %in% c("Macrophage_monocyte"))
 #number of donors
 sclc_macs@meta.data[,c("patient", "condition")] %>% unique %>% select(patient) %>% table
 #number of samples
-#luca_new@meta.data[,c("sample", "disease")] %>% unique %>% select(disease) %>% table
 
 #normalize the data
 sclc_macs <- NormalizeData(sclc_macs, scale.factor = 10000)
 
 
 #Load hierfit model
-
 refmod <- readRDS("data/Luca_Subtype_HierMod.RDS")
 
 ### Reannotation of Query Data with HieRFIT Model;

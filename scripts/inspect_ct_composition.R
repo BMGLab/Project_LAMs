@@ -118,3 +118,62 @@ ggsave(p.dens, filename = "figures/pct.density-LAvsRTM.pdf", width = 10, height 
 
 
 
+#Now examine the composition of macrophages between ever smokers and non-smokers
+
+p.ea <- macs@meta.data %>% 
+  select(sample, Projection_CellType, tumor_stage, uicc_stage, origin, ever_smoker, disease) %>% 
+  group_by(sample, Projection_CellType) %>% 
+  mutate(Cnt=n()) %>% 
+  unique() %>% 
+  group_by(sample) %>% 
+  mutate(pct=100*Cnt/sum(Cnt), Less=ifelse(sum(Cnt)<50, "low", "ok")) %>% 
+  filter(Less == "ok") %>% 
+  filter(!Projection_CellType %in% c('Int.Node.3', 'Int.Node.4', 'Int.Node.5')) %>%
+  filter(ever_smoker %in% c('yes', 'no')) %>%
+  ggplot(aes(Projection_CellType, pct, fill = ever_smoker )) + geom_boxplot() + theme_bw()
+
+
+ggsave(p.ea, filename = "figures/pct.luca.macs.smoking.pdf", width = 8, height = 4, device = "pdf")
+
+#now examine the composition of macrophages by separating by disease type and plotting facetted "disease" type
+
+library(dplyr)
+library(ggplot2)
+library(forcats)
+
+# Faceted boxplots of macrophage composition by disease
+p.ea.disease <- macs@meta.data %>%
+  select(sample, Projection_CellType, tumor_stage, uicc_stage, origin, ever_smoker, disease) %>%
+  filter(!is.na(disease)) %>%
+  # count per sample x cell type (and carry ever_smoker/disease with the sample)
+  group_by(sample, Projection_CellType, ever_smoker, disease) %>%
+  mutate(Cnt = n()) %>%
+  distinct(sample, Projection_CellType, ever_smoker, disease, .keep_all = TRUE) %>%  # like unique()
+  group_by(sample) %>%
+  mutate(pct = 100 * Cnt / sum(Cnt),
+         Less = ifelse(sum(Cnt) < 50, "low", "ok")) %>%
+  ungroup() %>%
+  filter(Less == "ok") %>%
+  filter(!Projection_CellType %in% c('Int.Node.3', 'Int.Node.4', 'Int.Node.5')) %>%
+  filter(ever_smoker %in% c('yes', 'no')) %>%
+  mutate(
+    # optional: order cell types by median pct across samples for nicer plotting
+    Projection_CellType = fct_reorder(Projection_CellType, pct, .fun = median, .desc = TRUE)
+  ) %>%
+  ggplot(aes(Projection_CellType, pct, fill = ever_smoker)) +
+  geom_boxplot(outlier.alpha = 0.4, width = 0.8) +
+  facet_wrap(~ disease, nrow = 1, scales = "fixed") +
+  coord_flip() +
+  labs(x = NULL, y = "% of macrophages per sample",
+       fill = "Ever smoker",
+       title = "Macrophage composition by cell type, faceted by disease") +
+  theme_bw() +
+  theme(
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_text(size = 9),
+    strip.background = element_rect(color = NA, fill = "grey90")
+  )
+
+ggsave(p.ea.disease,
+       filename = "figures/pct.luca.macs.smoking_by_disease.pdf",
+       width = 12, height = 5, device = "pdf")
